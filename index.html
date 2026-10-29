@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>IVOIRE CARS – Louez ou achetez une voiture en toute confiance</title>
@@ -339,6 +338,7 @@ textarea{width:100%;min-height:90px;padding:13px;border:1px solid var(--line);bo
     <section id="reserver">
       <div class="wrap split">
         <div>
+          <a class="back" href="#top" style="color:#111111">← Retour à l’accueil</a>
           <h2>Réserver pour un mariage ou une cérémonie</h2>
           <p style="color:var(--muted)">Mariage, dot, baptême ou autre cérémonie : réservez vos voitures à l’avance. Nous confirmons les véhicules et le prix avec vous par téléphone.</p>
         </div>
@@ -581,6 +581,16 @@ fetch(SB_URL + "/rest/v1/cars?select=*&available=eq.true&order=created_at.desc",
   .then(function(rows){ allCars = rows.map(function(r){ return {n:r.name, m:r.mode, d:(r.details || "") + (r.agency_name ? " · " + r.agency_name : ""), p:r.price || "Prix sur demande", i:r.images || [], a:r.agency_name || "", id:r.id}; }); })
   .catch(function(){ allCars = CARS; })
   .then(function(){ render(curF); });
+
+/* Photo de couverture personnalisée (modifiable depuis l’admin) */
+fetch(SB_URL + "/rest/v1/site_settings?select=hero_photo&id=eq.1&limit=1", {headers:{apikey:SB_KEY}})
+  .then(function(r){ return r.ok ? r.json() : []; })
+  .then(function(rows){
+    var u = rows && rows[0] && rows[0].hero_photo;
+    var im = document.querySelector(".hero-photo");
+    if (u && im) im.src = u;
+  })
+  .catch(function(){});
 
 /* Discussion avec les administrateurs (compte client obligatoire) */
 function chatLog(rows, id, mine){
